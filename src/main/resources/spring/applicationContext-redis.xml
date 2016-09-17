@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!-- 	<beans profile="dev,test"> -->
+			<!--redis 配置-->
+		    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+			<property name="maxTotal" value="${redisMaxTotal}" /><!-- 最大连接数 -->
+			<property name="maxIdle" value="${redisMaxIdle}" /><!-- 最大空闲连接数 -->
+			<property name="maxWaitMillis" value="${redisMaxWaitMillis}" /><!-- 获取连接时的最大等待毫秒数 -->
+			<property name="testOnBorrow" value="${redisTestOnBorrow}" /><!-- 获取连接的时候检查有效性 -->
+			</bean>
+			<!-- redis的连接池实例-->
+			<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+				<constructor-arg index="0" ref="jedisPoolConfig" />
+				<constructor-arg index="1" value="${redisHost}" />
+				<constructor-arg index="2" value="${redisPort}" type="int" />
+				<constructor-arg index="3" value="${redisTimeout}" type="int"/>
+		      	<constructor-arg index="4" value="${redisPassword}"/>
+			</bean>	
+			<!-- redis模板实例-->
+			<bean id="jedisTemplate" class="com.kuaikanwang.email.utils.redis.SimpleJedisTemplate">
+				<constructor-arg name="jedisPool" ref="jedisPool"/>
+			</bean>
+		<!-- </beans> -->
+	
+<!-- 		<beans profile="pre,prd">
+			redis连接池配置
+			<bean name="genericObjectPoolConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig" >
+				<property name="maxTotal" value="${redisMaxTotal}" />最大连接数
+				<property name="maxIdle" value="${redisMaxIdle}" />最大空闲连接数
+				<property name="maxWaitMillis" value="${redisMaxWaitMillis}" />获取连接时的最大等待毫秒数
+				<property name="testOnBorrow" value="${redisTestOnBorrow}" />获取连接的时候检查有效性
+			</bean>
+			
+			redis集群实例
+			<bean id="jedisCluster" class="cn.com.mx.gome.flash.util.redis.JedisClusterFactory">
+				<property name="redisServers" value="${redisServers}"/>
+				<property name="redisTimeout" value="${redisTimeout}"/>
+				<property name="maxRedirections" value="${redisMaxRedirections}"/>
+				<property name="poolConfig" ref="genericObjectPoolConfig"/>
+			</bean>
+			
+			redis模板实例
+			<bean id="jedisTemplate" class="cn.com.mx.gome.flash.util.redis.SimpleJedisTemplate">
+				<constructor-arg name="jedisCluster" ref="jedisCluster"/>
+			</bean>	
+   		</beans> -->
+	</beans>
